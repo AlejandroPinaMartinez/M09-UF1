@@ -27,6 +27,7 @@ public class RotX {
                     String xifrada = xifraRotX(text, desplaçament);
 
                     if (xdf.equals("f")) {
+                        System.out.println(xifrada + " <-- És el text xifrat");
                         String forçabruta = forcaBrutaRotX(xifrada);
                         System.out.println(forçabruta);
                     }
@@ -122,7 +123,11 @@ public class RotX {
                     forcaBruta = forcaBruta + xifrada.charAt(i);
                 }
             }
-            forcaBruta = forcaBruta + "\n";
+            if (k==1){
+            forcaBruta = forcaBruta + " <-- Text xifrat, desxifrat amb " + k + " desplaçament " + "\n";
+            } else {
+            forcaBruta = forcaBruta + " <-- Text xifrat, desxifrat amb " + k + " desplaçaments " + "\n";
+            }
         }
         return forcaBruta;
     }
