@@ -27,16 +27,15 @@ public class Polialfabetic {
         String xifrada="";
         for (int j= 0; j<cadena.length(); j++){
             if (Character.isLetter(cadena.charAt(j))) {
+                permutaAlfabet();
                 if (Character.isUpperCase(cadena.charAt(j))) {
                     for (int k = 0; k<abc.length; k++) {
-                        permutaAlfabet();
                         if(Character.toLowerCase(cadena.charAt(j))==abc[k]){
                             xifrada = xifrada + Character.toUpperCase(abcpermutat[k]);
                         }
                     } 
                 } else {
                     for (int k = 0; k<abc.length; k++) {
-                        permutaAlfabet();
                         if(cadena.charAt(j)==abc[k]){
                             xifrada = xifrada + (abcpermutat[k]);
                         }
@@ -53,18 +52,17 @@ public class Polialfabetic {
         String desxifrada="";
         for (int j= 0; j<xifrada.length(); j++){
             if (Character.isLetter(xifrada.charAt(j))) {
+                permutaAlfabet();
                 if (Character.isUpperCase(xifrada.charAt(j))) {
-                    for (int k = 0; k<abc.length; k++) {
-                        permutaAlfabet();
+                    for (int k = 0; k<abc.length; k++) { 
                         if(Character.toLowerCase(xifrada.charAt(j))==abcpermutat[k]){
                             desxifrada = desxifrada + Character.toUpperCase(abc[k]);
                         }
                     } 
                 } else {
                     for (int k = 0; k<abc.length; k++) {
-                        permutaAlfabet();
                         if(xifrada.charAt(j)==abcpermutat[k]){
-                            desxifrada = desxifrada + (abc[k]);
+                            desxifrada = desxifrada + Character.toLowerCase(abc[k]);
                         }
                     } 
                 }
@@ -77,14 +75,13 @@ public class Polialfabetic {
 
     public static void permutaAlfabet () {
         abcpermutat = new char[abc.length];
-        Random rnd = new Random();
 
         List<Character> charList = new ArrayList<>();
         for (char c : abc) {
             charList.add(c);
         }
         
-        Collections.shuffle(charList, rnd);
+        Collections.shuffle(charList, random);
         
         for (int i = 0; i < abc.length; i++) {
             abcpermutat[i] = charList.get(i);
