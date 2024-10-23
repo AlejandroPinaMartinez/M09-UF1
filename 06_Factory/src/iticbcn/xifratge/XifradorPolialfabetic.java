@@ -1,29 +1,18 @@
+package iticbcn.xifratge;
 import java.util.*;
-import java.util.random.RandomGenerator;
 
-public class Monoalfabetic {
+class XifradorPolialfabetic implements Xifrador {
 
     public static final char[] abc = "aàábcçdeèéfghiíïjklmnñoóòpqrstuúüvwxyz".toCharArray();
+    public static int clauSecreta;
+    public static Random random;
     public static char[] abcpermutat;
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Insereix una cadena de text: ");
-        String cadena = sc.nextLine();
-        System.out.println("Abecedari inicial:  " + Arrays.toString(abc));
-        char[] Abcpermutat = permutaAlfabet(abc);
-        System.out.println("Abecedari permutat: " + Arrays.toString(Abcpermutat));
-        String cadenaxifrada = xifraMonoAlfa(cadena);
-        System.out.println("Cadena inicial:     " + cadena);
-        System.out.println("Cadena xifrada:     " + cadenaxifrada);
-        String cadenadesxifrada = desxifraMonoAlfa(cadenaxifrada);
-        System.out.println("Cadena desxifrada:  " + cadenadesxifrada);
-    }
-
-    public static String xifraMonoAlfa (String cadena){
+    public String xifraPoliAlfa (String cadena){
         String xifrada="";
         for (int j= 0; j<cadena.length(); j++){
             if (Character.isLetter(cadena.charAt(j))) {
+                permutaAlfabet();
                 if (Character.isUpperCase(cadena.charAt(j))) {
                     for (int k = 0; k<abc.length; k++) {
                         if(Character.toLowerCase(cadena.charAt(j))==abc[k]){
@@ -44,12 +33,13 @@ public class Monoalfabetic {
         return xifrada;
     }
 
-    public static String desxifraMonoAlfa (String xifrada){
+    public String desxifraPoliAlfa (String xifrada){
         String desxifrada="";
         for (int j= 0; j<xifrada.length(); j++){
             if (Character.isLetter(xifrada.charAt(j))) {
+                permutaAlfabet();
                 if (Character.isUpperCase(xifrada.charAt(j))) {
-                    for (int k = 0; k<abc.length; k++) {
+                    for (int k = 0; k<abc.length; k++) { 
                         if(Character.toLowerCase(xifrada.charAt(j))==abcpermutat[k]){
                             desxifrada = desxifrada + Character.toUpperCase(abc[k]);
                         }
@@ -57,7 +47,7 @@ public class Monoalfabetic {
                 } else {
                     for (int k = 0; k<abc.length; k++) {
                         if(xifrada.charAt(j)==abcpermutat[k]){
-                            desxifrada = desxifrada + (abc[k]);
+                            desxifrada = desxifrada + Character.toLowerCase(abc[k]);
                         }
                     } 
                 }
@@ -68,23 +58,34 @@ public class Monoalfabetic {
         return desxifrada;
     }
 
-    public static char[] permutaAlfabet (char[] abc){
+    public void permutaAlfabet () {
         abcpermutat = new char[abc.length];
-        Random rnd = new Random();
 
         List<Character> charList = new ArrayList<>();
         for (char c : abc) {
             charList.add(c);
         }
         
-        Collections.shuffle(charList, rnd);
+        Collections.shuffle(charList, random);
         
         for (int i = 0; i < abc.length; i++) {
             abcpermutat[i] = charList.get(i);
         }
-        
-        return abcpermutat;
+    }
+
+    public void initRandom (int clauSecreta) {
+        random = new Random(clauSecreta);
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'xifra'");
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'desxifra'");
     }
 }
-
-
