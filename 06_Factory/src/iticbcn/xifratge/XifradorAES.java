@@ -12,60 +12,8 @@ class XifradorAES implements Xifrador {
     public static final String ALGORISME_XIFRAT = "AES";
     public static final String ALGORISME_HASH = "SHA-256";
     public static final String FORMAT_AES = "AES/CBC/PKCS5Padding";
-    
     private static final int MIDA_IV = 16;
     private static byte[] iv = new byte[MIDA_IV];
-    private static final String CLAU = "Alejandro";
-
-    // Método para cifrar
-    public byte[] xifraAES(String msg, String clau) throws Exception {
-        // Obtenemos los bytes del mensaje
-        byte[] msgBytes = msg.getBytes();
-
-        // Generamos el IV de forma aleatoria
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(iv);
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
-        // Crear clave a partir de la contraseña (hash)
-        SecretKeySpec secretKey = generaClau(clau);
-
-        // Configurar el cifrado AES en modo CBC con relleno PKCS5
-        Cipher cipher = Cipher.getInstance(FORMAT_AES);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-
-        // Cifrar el mensaje
-        byte[] xifrat = cipher.doFinal(msgBytes);
-
-        // Combinar el IV y el mensaje cifrado
-        byte[] combined = new byte[iv.length + xifrat.length];
-        System.arraycopy(iv, 0, combined, 0, iv.length);
-        System.arraycopy(xifrat, 0, combined, iv.length, xifrat.length);
-
-        return combined;
-    }
-
-    // Método para descifrar
-    public String desxifraAES(byte[] bIvIMsgXifrat, String clau) throws Exception {
-        // Extraer el IV de los primeros 16 bytes
-        byte[] ivExtraido = Arrays.copyOfRange(bIvIMsgXifrat, 0, MIDA_IV);
-        IvParameterSpec ivSpec = new IvParameterSpec(ivExtraido);
-
-        // Extraer la parte cifrada
-        byte[] msgXifrat = Arrays.copyOfRange(bIvIMsgXifrat, MIDA_IV, bIvIMsgXifrat.length);
-
-        // Generar la clave a partir de la contraseña (hash)
-        SecretKeySpec secretKey = generaClau(clau);
-
-        // Configurar el descifrado AES en modo CBC con relleno PKCS5
-        Cipher cipher = Cipher.getInstance(FORMAT_AES);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-
-        // Descifrar el mensaje
-        byte[] msgDesxifrat = cipher.doFinal(msgXifrat);
-
-        return new String(msgDesxifrat);
-    }
 
     // Método para generar una clave (hash) a partir de la contraseña
     private SecretKeySpec generaClau(String clau) throws Exception {
@@ -77,23 +25,59 @@ class XifradorAES implements Xifrador {
     @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
         try {
-            byte[] encryptedData = xifraAES(msg, clau);
-            return new TextXifrat(encryptedData);
+            // Obtenemos los bytes del mensaje
+            byte[] msgBytes = msg.getBytes();
+
+            // Generamos el IV de forma aleatoria
+            SecureRandom random = new SecureRandom();
+            random.nextBytes(iv);
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+            // Crear clave a partir de la contraseña (hash)
+            SecretKeySpec secretKey = generaClau(clau);
+
+            // Configurar el cifrado AES en modo CBC con relleno PKCS5
+            Cipher cipher = Cipher.getInstance(FORMAT_AES);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+
+            // Cifrar el mensaje
+            byte[] xifrat = cipher.doFinal(msgBytes);
+
+            // Combinar el IV y el mensaje cifrado
+            byte[] combined = new byte[iv.length + xifrat.length];
+            System.arraycopy(iv, 0, combined, 0, iv.length);
+            System.arraycopy(xifrat, 0, combined, iv.length, xifrat.length);
+
+            return new TextXifrat(combined);
+            
         } catch (Exception e) {
-            System.err.println("Error en el procés de xifratge AES: " + e.getMessage());
-            System.exit(1);
-            return null;  
+            throw new ClauNoSuportada("Error de cifrado: " + e.getMessage()); 
         }
     }
 
     @Override
     public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
         try {
-            return desxifraAES(xifrat.getBytes(), clau);
+            // Extraer el IV de los primeros 16 bytes
+            byte[] ivExtraido = Arrays.copyOfRange(xifrat.getBytes(), 0, MIDA_IV);
+            IvParameterSpec ivSpec = new IvParameterSpec(ivExtraido);
+
+            // Extraer la parte cifrada
+            byte[] msgXifrat = Arrays.copyOfRange(xifrat.getBytes(), MIDA_IV, xifrat.getBytes().length);
+
+            // Generar la clave a partir de la contraseña (hash)
+            SecretKeySpec secretKey = generaClau(clau);
+
+            // Configurar el descifrado AES en modo CBC con relleno PKCS5
+            Cipher cipher = Cipher.getInstance(FORMAT_AES);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+
+            // Descifrar el mensaje
+            byte[] msgDesxifrat = cipher.doFinal(msgXifrat);
+
+            return new String(msgDesxifrat);
         } catch (Exception e) {
-            System.err.println("Error en el procés de desxifratge AES: " + e.getMessage());
-            System.exit(1);
-            return null; 
+            throw new ClauNoSuportada("Error de cifrado: " + e.getMessage());
         }
     }
 }
