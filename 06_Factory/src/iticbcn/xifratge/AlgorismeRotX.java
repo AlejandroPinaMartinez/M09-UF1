@@ -1,5 +1,9 @@
 package iticbcn.xifratge;
 
-public class AlgorismeRotX {
-    
+public class AlgorismeRotX extends AlgorismeFactory {
+    @Override
+    public Xifrador creaXifrador() {
+        return new XifradorRotX();
+    }
 }
+
