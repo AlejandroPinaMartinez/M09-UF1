@@ -76,13 +76,24 @@ class XifradorAES implements Xifrador {
 
     @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'xifra'");
+        try {
+            byte[] encryptedData = xifraAES(msg, clau);
+            return new TextXifrat(encryptedData);
+        } catch (Exception e) {
+            System.err.println("Error en el procés de xifratge AES: " + e.getMessage());
+            System.exit(1);
+            return null;  
+        }
     }
 
     @Override
     public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'desxifra'");
+        try {
+            return desxifraAES(xifrat.getBytes(), clau);
+        } catch (Exception e) {
+            System.err.println("Error en el procés de desxifratge AES: " + e.getMessage());
+            System.exit(1);
+            return null; 
+        }
     }
 }
