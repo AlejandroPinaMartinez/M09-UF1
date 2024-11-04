@@ -8,54 +8,8 @@ class XifradorPolialfabetic implements Xifrador {
     public static Random random;
     public static char[] abcpermutat;
 
-    public String xifraPoliAlfa (String cadena){
-        String xifrada="";
-        for (int j= 0; j<cadena.length(); j++){
-            if (Character.isLetter(cadena.charAt(j))) {
-                permutaAlfabet();
-                if (Character.isUpperCase(cadena.charAt(j))) {
-                    for (int k = 0; k<abc.length; k++) {
-                        if(Character.toLowerCase(cadena.charAt(j))==abc[k]){
-                            xifrada = xifrada + Character.toUpperCase(abcpermutat[k]);
-                        }
-                    } 
-                } else {
-                    for (int k = 0; k<abc.length; k++) {
-                        if(cadena.charAt(j)==abc[k]){
-                            xifrada = xifrada + (abcpermutat[k]);
-                        }
-                    } 
-                }
-            } else {
-                    xifrada=xifrada + cadena.charAt(j);
-            }
-        }
-        return xifrada;
-    }
-
-    public String desxifraPoliAlfa (String xifrada){
-        String desxifrada="";
-        for (int j= 0; j<xifrada.length(); j++){
-            if (Character.isLetter(xifrada.charAt(j))) {
-                permutaAlfabet();
-                if (Character.isUpperCase(xifrada.charAt(j))) {
-                    for (int k = 0; k<abc.length; k++) { 
-                        if(Character.toLowerCase(xifrada.charAt(j))==abcpermutat[k]){
-                            desxifrada = desxifrada + Character.toUpperCase(abc[k]);
-                        }
-                    } 
-                } else {
-                    for (int k = 0; k<abc.length; k++) {
-                        if(xifrada.charAt(j)==abcpermutat[k]){
-                            desxifrada = desxifrada + Character.toLowerCase(abc[k]);
-                        }
-                    } 
-                }
-            } else {
-                    desxifrada=desxifrada + xifrada.charAt(j);
-            }
-        }
-        return desxifrada;
+    public XifradorPolialfabetic() {
+        abcpermutat = new char[abc.length];
     }
 
     public void permutaAlfabet () {
@@ -73,19 +27,80 @@ class XifradorPolialfabetic implements Xifrador {
         }
     }
 
-    public void initRandom (int clauSecreta) {
+    public void initRandom (long clauSecreta) {
         random = new Random(clauSecreta);
     }
 
     @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'xifra'");
+        try {
+            // Convertir la clau a long
+            long clauSecreta = Long.parseLong(clau);
+            initRandom(clauSecreta);
+
+            // Cifrar el missatge
+            String xifrada="";
+            for (int j= 0; j<msg.length(); j++){
+                if (Character.isLetter(msg.charAt(j))) {
+                    permutaAlfabet();
+                    if (Character.isUpperCase(msg.charAt(j))) {
+                        for (int k = 0; k<abc.length; k++) {
+                            if(Character.toLowerCase(msg.charAt(j))==abc[k]){
+                                xifrada = xifrada + Character.toUpperCase(abcpermutat[k]);
+                            }
+                        } 
+                    } else {
+                        for (int k = 0; k<abc.length; k++) {
+                            if(msg.charAt(j)==abc[k]){
+                                xifrada = xifrada + (abcpermutat[k]);
+                            }
+                        } 
+                    }
+                } else {
+                        xifrada=xifrada + msg.charAt(j);
+                }
+            }
+            return new TextXifrat(xifrada.getBytes());
+
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("La clau per xifrat Polialfabètic ha de ser un String convertible a long");
+        }
     }
 
     @Override
     public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'desxifra'");
+        try {
+            // Convertir la clau a long
+            long clauSecreta = Long.parseLong(clau);
+            initRandom(clauSecreta);
+
+            // Descifrar el mensaje
+            String xifrada = new String(xifrat.toString());
+            String desxifrada="";
+            for (int j= 0; j<xifrada.length(); j++){
+                if (Character.isLetter(xifrada.charAt(j))) {
+                    permutaAlfabet();
+                    if (Character.isUpperCase(xifrada.charAt(j))) {
+                        for (int k = 0; k<abc.length; k++) { 
+                            if(Character.toLowerCase(xifrada.charAt(j))==abcpermutat[k]){
+                                desxifrada = desxifrada + Character.toUpperCase(abc[k]);
+                            }
+                        } 
+                    } else {
+                        for (int k = 0; k<abc.length; k++) {
+                            if(xifrada.charAt(j)==abcpermutat[k]){
+                                desxifrada = desxifrada + Character.toLowerCase(abc[k]);
+                            }
+                        } 
+                    }
+                } else {
+                        desxifrada=desxifrada + xifrada.charAt(j);
+                }
+            }
+            return desxifrada;
+
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("La clau per xifrat Polialfabètic ha de ser un String convertible a long");
+        }
     }
 }

@@ -88,7 +88,7 @@ class  XifradorMonoalfabetic implements Xifrador {
                         desxifrada=desxifrada + xifrada.charAt(j);
                 }
             }
-            return desxifrada.toString();
+            return desxifrada;
 
         } catch (Exception e) {
             throw new ClauNoSuportada("Error de cifrado: " + e.getMessage());
