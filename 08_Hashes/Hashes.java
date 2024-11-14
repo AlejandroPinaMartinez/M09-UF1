@@ -61,7 +61,7 @@ public class Hashes {
 
     public String forcaBruta(String alg, String hash, String salt) {
         String charset = "abcdefABCDEF1234567890!";  // Charset de caràcters possibles per a la contrasenya
-        char[] password = new char[6];  // Posem que la contrasenya provarà una longitud màxima de 6 caràcters
+        char[] password = new char[6];  // Poso que la contrasenya provari una longitud màxima de 6 caràcters
         StringBuilder sb = new StringBuilder();
         
 
@@ -86,7 +86,7 @@ public class Hashes {
                                         getSHA512AmbSalt(attempt, salt) : getPBKDF2AmbSalt(attempt, salt); // Genero el hash de la contrasenya
                                         
                                 if (generatedHash != null && generatedHash.equals(hash)) {
-                                    return attempt;  // Retornem la contrasenya trobada
+                                    return attempt;  // Retoro la contrasenya trobada
                                 }
                             }
                         }
