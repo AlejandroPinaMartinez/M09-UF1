@@ -61,7 +61,7 @@ public class Hashes {
 
     public String forcaBruta(String alg, String hash, String salt) {
         String charset = "abcdefABCDEF1234567890!";  // Charset de caràcters possibles per a la contrasenya
-        char[] password = new char[6];  // La contrasenya provarà una longitud màxima de 6 caràcters
+        char[] password = new char[6];  // Posem que la contrasenya provarà una longitud màxima de 6 caràcters
         StringBuilder sb = new StringBuilder();
         
 
@@ -72,22 +72,20 @@ public class Hashes {
             for (int j = 0; j < charset.length(); j++) {
                 password[1] = charset.charAt(j); // Segona posició
                 for (int k = 0; k < charset.length(); k++) {
-                    password[2] = charset.charAt(k); // Tercera posició
+                    password[2] = charset.charAt(k); // ...
                     for (int l = 0; l < charset.length(); l++) {
-                        password[3] = charset.charAt(l); // Quarta posició
+                        password[3] = charset.charAt(l); 
                         for (int m = 0; m < charset.length(); m++) {
-                            password[4] = charset.charAt(m); // Cinquena posició
+                            password[4] = charset.charAt(m); 
                             for (int n = 0; n < charset.length(); n++) {
-                                password[5] = charset.charAt(n); // Sisena posició
-                                String attempt = new String(password);  // Generem la contrasenya
-                                npass++; // Incrementem el contador de contrasenyes provades
+                                password[5] = charset.charAt(n); 
+                                String attempt = new String(password);  // Genero la contrasenya
+                                npass++; // Incremento el contador de contrasenyes provades
                                 
                                 String generatedHash = (alg.equals("SHA-512")) ? 
-                                        getSHA512AmbSalt(attempt, salt) : getPBKDF2AmbSalt(attempt, salt); // Generem el hash de la contrasenya
+                                        getSHA512AmbSalt(attempt, salt) : getPBKDF2AmbSalt(attempt, salt); // Genero el hash de la contrasenya
                                         
                                 if (generatedHash != null && generatedHash.equals(hash)) {
-                                    long endTime = System.currentTimeMillis();  // Temps final
-                                    System.out.println("Hash trencat: " + attempt);
                                     return attempt;  // Retornem la contrasenya trobada
                                 }
                             }
@@ -97,14 +95,27 @@ public class Hashes {
             }
         }
         
-        return null; // Si no es troba cap coincidència
+        return null; 
     }
     
 
     public String getInterval(long t1, long t2) {
         long interval = t2 - t1;
-        return interval + " ms";
-        
+    
+        long days = interval / (24 * 60 * 60 * 1000);
+        interval %= 24 * 60 * 60 * 1000;
+    
+        long hours = interval / (60 * 60 * 1000);
+        interval %= 60 * 60 * 1000;
+    
+        long minutes = interval / (60 * 1000);
+        interval %= 60 * 1000;
+    
+        long seconds = interval / 1000;
+        long millis = interval % 1000;
+    
+        return days + " dies / " + hours + " hores / " + minutes + " minuts / " + seconds + " segons / " + millis + " millis";
     }
+    
 }
 
