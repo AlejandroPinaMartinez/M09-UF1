@@ -4,6 +4,8 @@ import java.util.HexFormat;
 
 public class Hashes {
     int npass = 0;
+
+    // Main
     public static void main(String[] args) throws Exception {
         String salt = "qpoweiruañslkdfjz";
         String pw = "aaabF!";
@@ -30,30 +32,58 @@ public class Hashes {
         }
     }
     
+    // Metode per calcular el hash SHA-512 d'una contraseña junt amb unsalt
     public String getSHA512AmbSalt(String pw, String salt) {
         try {
+
+            // instància de l'algoritme SHA-512
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
+
+            // Actualitza l'objecte MessageDigest amb els bytes de la sal
             digest.update(salt.getBytes()); 
+
+            // Calcul del hash dels bytes de la contrasenya, ja combinada amb la sal.
             byte[] hash = digest.digest(pw.getBytes());
+
+            // convertir el hash (bytes) a una representació hexadecimal.
             HexFormat hex = HexFormat.of(); 
+
+            // retorna hash en format hexadecimal
             return hex.formatHex(hash);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) { // Maneig d'excepció
             e.printStackTrace();
             return null;
         }
     }
+    
+    // Mètode per generar un hash utilitzant PBKDF2 amb una salt
     public String getPBKDF2AmbSalt(String pw, String salt) {
         try {
+
+            // Nombre d'iteracions del procés de hashing 
             int iterations = 10000;
+
+            // longitud de la clau en bits.
             int keyLength = 512;
+
+            // Converteix la contrasenya
             char[] chars = pw.toCharArray();
+
+            // Converteix la salt
             byte[] saltBytes = salt.getBytes();
+
             javax.crypto.SecretKeyFactory skf = javax.crypto.SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
             javax.crypto.spec.PBEKeySpec spec = new javax.crypto.spec.PBEKeySpec(chars, saltBytes, iterations, keyLength);
+
+            // Genera el Hash (clau privada)
             byte[] hash = skf.generateSecret(spec).getEncoded();
+
+            // convertir el hash (bytes) a una representació hexadecimal.
             HexFormat hex = HexFormat.of();
+
+            // retorna hash en format hexadecimal
             return hex.formatHex(hash);
-        } catch (Exception e) {
+        } catch (Exception e) { // Maneig d'excepció
             e.printStackTrace();
             return null;
         }
@@ -64,7 +94,7 @@ public class Hashes {
         char[] password = new char[6];  // Poso que la contrasenya provari una longitud màxima de 6 caràcters
         
         
-        // Bucle anidat per provar totes les combinacions possibles de 6 caràcters
+        // Bucle anidat per provar totes les combinacions possibles de 6 caràcters que hem afegit a char[] password
         for (int i = 0; i < charset.length(); i++) {
             password[0] = charset.charAt(i); // Primera posició
             for (int j = 0; j < charset.length(); j++) {
@@ -96,7 +126,7 @@ public class Hashes {
         return null; 
     }
     
-
+    //retorna el interval de temps que tarda en realitzar les operacions, amb la sortida especificada
     public String getInterval(long t1, long t2) {
         long interval = t2 - t1;
     
