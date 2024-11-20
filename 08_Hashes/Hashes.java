@@ -1,6 +1,11 @@
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
 import java.util.HexFormat;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class Hashes {
     int npass = 0;
@@ -52,7 +57,7 @@ public class Hashes {
             return hex.formatHex(hash);
         } catch (NoSuchAlgorithmException e) { // Maneig d'excepció
             e.printStackTrace();
-            return null;
+            return null; 
         }
     }
     
@@ -60,23 +65,10 @@ public class Hashes {
     public String getPBKDF2AmbSalt(String pw, String salt) {
         try {
 
-            // Nombre d'iteracions del procés de hashing 
-            int iterations = 10000;
-
-            // longitud de la clau en bits.
-            int keyLength = 512;
-
-            // Converteix la contrasenya
-            char[] chars = pw.toCharArray();
-
-            // Converteix la salt
-            byte[] saltBytes = salt.getBytes();
-
-            javax.crypto.SecretKeyFactory skf = javax.crypto.SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-            javax.crypto.spec.PBEKeySpec spec = new javax.crypto.spec.PBEKeySpec(chars, saltBytes, iterations, keyLength);
-
-            // Genera el Hash (clau privada)
-            byte[] hash = skf.generateSecret(spec).getEncoded();
+            byte[] abSalt = salt.getBytes(StandardCharsets.UTF_8);
+            KeySpec spec = new PBEKeySpec(pw.toCharArray(), abSalt, 65536, 128);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = factory.generateSecret(spec).getEncoded();
 
             // convertir el hash (bytes) a una representació hexadecimal.
             HexFormat hex = HexFormat.of();
